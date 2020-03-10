@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { View, SafeAreaView, ScrollView, Button, Text, Image } from "react-native"
+import { View, SafeAreaView, ScrollView, Button, Text, Image,StyleSheet } from "react-native"
 import { Actions } from "react-native-router-flux"
 import { TouchableHighlight } from "react-native-gesture-handler"
 
@@ -17,8 +17,20 @@ export default class OnlineChooseTimeScreen extends Component{
 
     _renderChooseTimeView = ()=>{
 
+        const chooseTimeStyle = StyleSheet.create({
+            container:{
+                flex:1,
+                borderRadius:15,
+                backgroundColor:"white",
+                marginVertical:15,
+                marginHorizontal:15,
+            }
+        })
+
         // 选择时间
-        return <View>
+        return <View style = {chooseTimeStyle.container}>
+
+            <Text>你好，我是来选择时间的</Text>
 
         </View>
 
