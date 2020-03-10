@@ -1,7 +1,8 @@
 import React, { Component } from "react"
-import { View, SafeAreaView, ScrollView, Button, Text, Image,StyleSheet } from "react-native"
+import { View, SafeAreaView, ScrollView, Button, Text, Image, StyleSheet, Dimensions} from "react-native"
 import { Actions } from "react-native-router-flux"
 import { TouchableHighlight } from "react-native-gesture-handler"
+import {Calendar, CalendarList, Agenda} from 'react-native-calendars'
 
 
 
@@ -12,10 +13,14 @@ export default class OnlineChooseTimeScreen extends Component{
         this.state={
             businessType:props.businessType, // 默认是0表示未选择，1，2，3 分别代表三个业务
             businessName:props.businessName, // 本页面显示的业务名字
+            chooseTime:"选择时间",  // 选择时间
         }
     }
 
     _renderChooseTimeView = ()=>{
+
+        // 系统宽高
+        const {height, width} = Dimensions.get('window');
 
         const chooseTimeStyle = StyleSheet.create({
             container:{
@@ -24,13 +29,47 @@ export default class OnlineChooseTimeScreen extends Component{
                 backgroundColor:"white",
                 marginVertical:15,
                 marginHorizontal:15,
+            },
+            calendar:{
+                flex:1,
+                borderRadius:15,
+                backgroundColor:"white",
+                marginVertical:15,
+                marginHorizontal:15,
+                alignContent:"center"
+            },
+            line: {
+                width:width - 60,
+                height:0.5,
+                marginHorizontal:15,
+                backgroundColor:"lightgray"
+            },
+            chooseTimeBtn:{
+                flex:1,
+                flexDirection:"row",
+                justifyContent:"space-between",
+                borderRadius:15,
+                backgroundColor:"red",
+                marginVertical:15,
+                marginHorizontal:15,
             }
         })
 
         // 选择时间
         return <View style = {chooseTimeStyle.container}>
 
-            <Text>你好，我是来选择时间的</Text>
+            <Calendar style = {chooseTimeStyle.calendar}></Calendar>
+            <View style = {chooseTimeStyle.line}></View>
+
+            <TouchableHighlight underlayColor = "red" onPress = {()=>{
+                alert("用户点击了选择时间");
+            }}>
+                <View style = {chooseTimeStyle.chooseTimeBtn}>
+                    <Text>选择时间</Text>
+                    <Text style = {{color:"grren"}}>{this.state.chooseTime}</Text>
+                </View>
+            </TouchableHighlight>
+            
 
         </View>
 
