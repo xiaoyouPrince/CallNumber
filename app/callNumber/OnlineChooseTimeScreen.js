@@ -13,7 +13,7 @@ export default class OnlineChooseTimeScreen extends Component{
         this.state={
             businessType:props.businessType, // 默认是0表示未选择，1，2，3 分别代表三个业务
             businessName:props.businessName, // 本页面显示的业务名字
-            chooseTime:"选择时间",  // 选择时间
+            chooseTime:"选择时间 >",  // 选择时间
         }
     }
 
@@ -26,17 +26,19 @@ export default class OnlineChooseTimeScreen extends Component{
             container:{
                 flex:1,
                 borderRadius:15,
-                backgroundColor:"white",
+                backgroundColor:"#fff",
                 marginVertical:15,
                 marginHorizontal:15,
             },
             calendar:{
                 flex:1,
-                borderRadius:15,
+                borderRadius:1,
                 backgroundColor:"white",
                 marginVertical:15,
                 marginHorizontal:15,
-                alignContent:"center"
+                alignContent:"center",
+                borderColor:"red",
+                borderWidth:0.5
             },
             line: {
                 width:width - 60,
@@ -49,7 +51,7 @@ export default class OnlineChooseTimeScreen extends Component{
                 flexDirection:"row",
                 justifyContent:"space-between",
                 borderRadius:15,
-                backgroundColor:"red",
+                backgroundColor:"#fff",
                 marginVertical:15,
                 marginHorizontal:15,
             }
@@ -66,7 +68,7 @@ export default class OnlineChooseTimeScreen extends Component{
             }}>
                 <View style = {chooseTimeStyle.chooseTimeBtn}>
                     <Text>选择时间</Text>
-                    <Text style = {{color:"grren"}}>{this.state.chooseTime}</Text>
+                    <Text style = {{color:"lightgray"}}>{this.state.chooseTime}</Text>
                 </View>
             </TouchableHighlight>
             
@@ -86,43 +88,41 @@ export default class OnlineChooseTimeScreen extends Component{
         <SafeAreaView style={{flex:1}}>
             <ScrollView style={{flex:1, height:"100%"}}>
                 {/* contentView */}
-                <View style = {{flex:1, justifyContent:"space-between", height:"100%", backgroundColor:"red"}}>
+                <View style = {{flex:1, justifyContent:"space-between", height:"100%", backgroundColor:"#fff"}}>
                     {/* 头 */}
                     <View style={{flex:1, backgroundColor:"#fff", justifyContent:"space-between", alignContent:"stretch"}}>
-                    <View>
-                        <Text style={{fontSize:22, marginHorizontal:20, marginTop:20, fontWeight:"bold"}}>所选业务类型</Text>
-                        <Text style={{fontSize:15, marginHorizontal:20, marginTop:10}}>{this.state.businessType} + {this.state.businessName}</Text>
-                        <Text style={{fontSize:22, marginHorizontal:20, marginTop:20, fontWeight:"bold"}}>需要携带清单</Text>
-                        <View style={{flex:1, justifyContent:"flex-start", flexDirection:"row",marginTop:10, marginBottom:10, marginHorizontal:15}}>
-                            <TouchableHighlight onPress = {()=>{
-                                // 进入资料详情页面
-                                Actions.push("metrailDetail")
-                            }}
-                            underlayColor = "#fff">
-                                <View style = {{
-                                    width: 100,
-                                    height: 30,
-                                    borderWidth: 1,
-                                    borderColor: "red",
-                                    borderRadius: 15,
-                                    justifyContent:"center",
-                                    alignItems: "center"
-                                }}>
-                                    <Text style = {{
-                                        color: "red",
-                                        fontSize: 14
-                                    }}
-                                    >查看详情 ></Text>
-                                </View>
-                            </TouchableHighlight>
-                        </View>
+                        <View>
+                            <Text style={{fontSize:22, marginHorizontal:20, marginTop:20, fontWeight:"bold"}}>所选业务类型</Text>
+                            <Text style={{fontSize:15, marginHorizontal:20, marginTop:10}}>{this.state.businessType} + {this.state.businessName}</Text>
+                            <Text style={{fontSize:22, marginHorizontal:20, marginTop:20, fontWeight:"bold"}}>需要携带清单</Text>
+                            <View style={{flex:1, justifyContent:"flex-start", flexDirection:"row",marginTop:10, marginBottom:10, marginHorizontal:15}}>
+                                <TouchableHighlight onPress = {()=>{
+                                    // 进入资料详情页面
+                                    Actions.push("metrailDetail")
+                                }}
+                                underlayColor = "#fff">
+                                    <View style = {{
+                                        width: 100,
+                                        height: 30,
+                                        borderWidth: 1,
+                                        borderColor: "red",
+                                        borderRadius: 15,
+                                        justifyContent:"center",
+                                        alignItems: "center"
+                                    }}>
+                                        <Text style = {{
+                                            color: "red",
+                                            fontSize: 14
+                                        }}
+                                        >查看详情 ></Text>
+                                    </View>
+                                </TouchableHighlight>
+                            </View>
+                    </View>
                     </View>
                 </View>
-
-                    {/* 中间选择时间 */}
-                    {this._renderChooseTimeView()}
-                    
-                </View>
+                {/* 中间选择时间 */}
+                {this._renderChooseTimeView()}
             </ScrollView>
 
             {/* 底部预约按钮 */}
