@@ -223,37 +223,15 @@ export default class OnlineAppointScreen extends React.Component{
 
         // 用户已近选择了一级业务类型,根据业务类型加载对应的
         if(this.state.businessType === 1){
-          // alert(this.state.businessList)
           return this.renderBusinessView()
         }
 
         if(this.state.businessType === 2){
-            // if(this.state.businessList){
-            //     return<View>
-            //         <Text>这是在职业务的列表</Text>
-            //     </View>
-            // }
             return this.renderBusinessView()
         }
         
 
         if(this.state.businessType === 3){
-            // if(this.state.businessList){
-            //     return<View>
-
-            //         <Button onPress={()=>{
-            //             // 用户点击返回
-                        
-
-            //         }} title="返回"
-            //         style={{
-            //             marginTop:20,
-            //             marginBottom:20,
-            //             marginHorizontal:20
-            //         }}></Button>
-            //         <Text>这是离职业务的列表</Text>
-            //     </View>
-            // }
             return this.renderBusinessView()
         }
 
