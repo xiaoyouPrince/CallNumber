@@ -165,9 +165,9 @@ export default class OnlineChooseTimeScreen extends Component{
                     {text:"我知道了", style:"default", onPress:()=>{
 
                         // 回退
-                        Actions.pop()
+                        Actions.popTo("app");
                         // 重新加载页面
-                        Actions.reset("onlineApoint",{businessType:0});
+                        // Actions.reset("onlineApoint",{businessType:0});
                     }}
                 ])
 
