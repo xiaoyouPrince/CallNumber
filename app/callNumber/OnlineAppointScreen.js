@@ -1,9 +1,10 @@
 import React from "react"
 import { View, SafeAreaView, ScrollView, StyleSheet, Text, Image, TouchableHighlight, Button, ActivityIndicator } from "react-native"
 import { color } from "react-native-reanimated"
-import { Actions } from "react-native-router-flux"
+import { Actions, StackProps } from "react-native-router-flux"
 
-
+// const REQUEST_URL = "http://localhost/json";
+const REQUEST_URL = "http://127.0.0.1/json";
 
 
 export default class OnlineAppointScreen extends React.Component{
@@ -13,21 +14,46 @@ export default class OnlineAppointScreen extends React.Component{
 
         this.state={
 
+            
             businessType:props.businessType, // 默认是0表示未选择，1，2，3 分别代表三个业务
             hasChoosen:false, // 是否已经选择了业务
-            businessList:[]
+            businessList:[],
+            data: [], // 请求到的列表数据源
+            loaded: false,  // 是否已经加装数据
         }
 
         // 绑定this
         this._entryBtnClick = this._entryBtnClick.bind(this)
     }
 
+    componentWillMount()
+    {
+      // 请求数据
+      this.fetchData()
+
+    }
+
+    fetchData = ()=>{
+      fetch(REQUEST_URL)
+        .then(response => response.json())
+        .then(responseData => {
+
+          this.setState({
+            data: this.state.data.concat(responseData.data),
+            loaded: true
+          });
+        });
+    }
+
+
+
+
     // 点击入职任务处理
-    _entryBtnClick(){
+    _entryBtnClick(businessType){
         // alert("入职业务点击");
 
         this.setState({
-            businessType:1,
+            businessType:businessType,
             businessList:[]})
     }
 
@@ -125,69 +151,88 @@ export default class OnlineAppointScreen extends React.Component{
     }
 
     // 绘制有业务列表的页面
-    renderBusinessView() {
+    renderBusinessView = () => {
+
+      // 这里要根据是第几个业务来看
+      // if(this.state.businessType === 1)
+      // {
+        // console.warn(JSON.stringify(this.state.data, null, '  '))
         return<View style={{flex:1, backgroundColor:"#f6f6f6"}}>
         <SafeAreaView style={{flex:1}}>
             <ScrollView>
                 {this.renderHeaderView()}
                 {this.renderBackBtn()}
-                
-                {/* 这里放置对应数量的二级业务 */}
-                {this.renderListView("任务1")}
-                {this.renderListView("任务2")}
-                {this.renderListView("任务3")}
-                {this.renderListView("任务4")}
-                {this.renderListView("任务5")}
-                {this.renderListView("任务6")}
-                {this.renderListView("任务7")}
-                {this.renderListView("任务8")}
+
+                {this.state.data.map((item, index)=>{
+
+                    // 业务类型为第一个 入职业务
+                    if(this.state.businessType === 1){
+                      if(index === 0){
+                        return item.bussinessData.map((businessItem)=>{
+                          return this.renderListView(businessItem.busName)
+                        })
+                      }
+                    }
+                    else if(this.state.businessType === 2)
+                    {  // 业务类型为第二个在职业务
+                      if(index === 1){
+                        return item.bussinessData.map((businessItem)=>{
+                          return this.renderListView(businessItem.busName)
+                        })
+                      }
+                    }else {
+                      // 业务类型为第三个离职业务
+                      if(index === 2){
+                        return item.bussinessData.map((businessItem)=>{
+                          return this.renderListView(businessItem.busName)
+                        })
+                      }
+                    }
+                })}
+
             </ScrollView>
         </SafeAreaView>
         </View>
+
+      // }
+
+      
+
+
+
+        
     }
 
+    // 加装View
+    renderLoadingView(message) {
+
+      let realMessage = message?message:"正在加载中...";
+      return (
+        <View style={{ flex:1, flexDirection: "row", justifyContent: "center", alignItems: "center", backgroundColor: "#F5FCFF"}}>
+          <Text>{realMessage}</Text>
+        </View>
+      );
+    }
 
     render(){
 
+        // 先看是否下载了，数据
+        if (!this.state.loaded) {
+          return this.renderLoadingView();
+        }
+
         // 用户已近选择了一级业务类型,根据业务类型加载对应的
         if(this.state.businessType === 1){
-            if(this.state.businessList === null){
-                return<View style={{flex:1, justifyContent:"center", alignItems:"center"}}>
-                    <Text style={{marginBottom:300}}>Loading businessList...</Text>
-                </View>
-                
-            }else
-            {
-                alert(this.state.businessList)
-                return this.renderBusinessView()
-            }
+          return this.renderBusinessView()
         }
 
         if(this.state.businessType === 2){
-            if(this.state.businessList){
-                return<View>
-                    <Text>这是在职业务的列表</Text>
-                </View>
-            }
+            return this.renderBusinessView()
         }
+        
 
         if(this.state.businessType === 3){
-            if(this.state.businessList){
-                return<View>
-
-                    <Button onPress={()=>{
-                        // 用户点击返回
-                        
-
-                    }} title="返回"
-                    style={{
-                        marginTop:20,
-                        marginBottom:20,
-                        marginHorizontal:20
-                    }}></Button>
-                    <Text>这是离职业务的列表</Text>
-                </View>
-            }
+            return this.renderBusinessView()
         }
 
 
@@ -204,7 +249,7 @@ export default class OnlineAppointScreen extends React.Component{
                     <View style={styles.funcContainer}>
                         <View style={{height:75, flex:1, flexDirection:"row", justifyContent:"space-around"}}>
                             <TouchableHighlight onPress={()=>{
-                                this._entryBtnClick()
+                                this._entryBtnClick(1)
                             }} underlayColor="red" style={{flex:1}}>
                                 <View style={styles.funcItemStyle}>
                                     {/* 左边一个icon */}
@@ -219,7 +264,7 @@ export default class OnlineAppointScreen extends React.Component{
 
                             <TouchableHighlight onPress={()=>{
                                 // alert("点击了在职任务")
-                                this._entryBtnClick()
+                                this._entryBtnClick(2)
                             }} underlayColor="red" style={{flex:1}}>
                                 <View style={styles.funcItemStyle}>
                                 {/* 左边一个icon */}
@@ -237,7 +282,7 @@ export default class OnlineAppointScreen extends React.Component{
                             
                             <TouchableHighlight onPress={()=>{
                                 // alert("点击了离职任务")
-                                this._entryBtnClick()
+                                this._entryBtnClick(3)
                             }} underlayColor="red" style={{flex:1}}>
                                 <View style={styles.funcItemStyle}>
                                     {/* 左边一个icon */}
