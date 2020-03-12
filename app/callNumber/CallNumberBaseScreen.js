@@ -69,7 +69,31 @@ export default class CallNumberBasePage extends React.Component
     {
         super(props)
 
-        this.state={}
+        this.state={
+            pictures: []    // 轮播图数组
+        }
+    }
+
+    componentWillMount()
+    {
+        fetch("http://localhost/json")
+        .then(res => res.json())
+        .then( data => {
+            // 拿到数据是时候
+            console.warn(JSON.stringify(data, null, ' '));
+
+            // 绑定数据
+            this.setState({
+                pictures: data.data
+            })
+        })
+    }
+
+
+    _renderPictures = ()=>{
+        this.state.pictures.map((item, i)=>{
+            return 
+        })
     }
 
     render(){
@@ -79,20 +103,18 @@ export default class CallNumberBasePage extends React.Component
                 <ScrollView>
 
                     {/* 轮播图 */}
-                    <Swiper style={styles.wrapper} showsButtons={false}>
-
-                        <View style={styles.slide1}>
-                            <Text style={styles.text}>Hello Swiper</Text>
-                        </View>
-
-                        <View style={styles.slide2}>
-                            <Text style={styles.text}>Beautiful</Text>
-                        </View>
-
-                        <View style={styles.slide3}>
-                            <Text style={styles.text}>And simple</Text>
-                        </View>
-                    </Swiper>
+                    <View style={styles.wrapper}>
+                        <Swiper showsButtons={false} autoplayDirection={true}>
+                            {
+                                this.state.pictures.map((item, i)=>{
+                                    return<View style = {{flex:1, justifyContent:"center", alignItems:"center",backgroundColor:"#9dd6ed"}}>
+                                    <Text style = {{fontSize:39, color:"red"}}>{item.deptName}</Text>
+                                </View>
+                                })
+                            }
+                            
+                        </Swiper>
+                    </View>
 
 
                     {/* 四个功能导航入口 */}
