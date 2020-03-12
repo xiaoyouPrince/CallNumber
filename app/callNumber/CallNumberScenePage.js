@@ -1,5 +1,5 @@
 import React from "react"
-import { View, SafeAreaView, ScrollView, StyleSheet, Text, Image, TouchableHighlight, Button, ActivityIndicator } from "react-native"
+import { View,Alert, SafeAreaView, ScrollView, StyleSheet, Text, Image, TouchableHighlight, Button, ActivityIndicator } from "react-native"
 import { color } from "react-native-reanimated"
 import { Actions, StackProps } from "react-native-router-flux"
 
@@ -17,6 +17,7 @@ export default class OnlineAppointScreen extends React.Component{
             
             businessType:props.businessType, // 默认是0表示未选择，1，2，3 分别代表三个业务
             hasChoosen:false, // 是否已经选择了业务
+            chooseBusiName:"", // 用户选中的二级业务名称
             businessList:[],
             data: [], // 请求到的列表数据源
             loaded: false,  // 是否已经加装数据
@@ -132,14 +133,22 @@ export default class OnlineAppointScreen extends React.Component{
 
         return <View style={{flex:1, justifyContent:"flex-start", flexDirection:"column",marginTop:0, marginBottom:10}}>
             <TouchableHighlight style={{flex:1}} onPress={()=>{
-                alert("点击了" + title)
+                // alert("点击了" + title)
 
-                let typeString = (this.state.businessType === 1) ? "入职业务" : (this.state.businessType === 2) ? "在职业务" : "离职业务";
+                // let typeString = (this.state.businessType === 1) ? "入职业务" : (this.state.businessType === 2) ? "在职业务" : "离职业务";
 
-                Actions.push("appointComfirm",{
-                    businessType:typeString,
-                    businessName:title
+                // Actions.push("appointComfirm",{
+                //     businessType:typeString,
+                //     businessName:title
+                // })
+
+                // 选择完成业务 - 进行展示
+                this.setState({
+                  hasChoosen:true,
+                  chooseBusiName:title
                 })
+
+
             }}>
                 <View style={cellStyles.containerStyle}>
                     <Image source={require("../images/icon/1.png")} style={cellStyles.iconStyle}></Image>
@@ -153,54 +162,43 @@ export default class OnlineAppointScreen extends React.Component{
     // 绘制有业务列表的页面
     renderBusinessView = () => {
 
-      // 这里要根据是第几个业务来看
-      // if(this.state.businessType === 1)
-      // {
-        // console.warn(JSON.stringify(this.state.data, null, '  '))
-        return<View style={{flex:1, backgroundColor:"#f6f6f6"}}>
-        <SafeAreaView style={{flex:1}}>
-            <ScrollView>
-                {this.renderHeaderView()}
-                {this.renderBackBtn()}
+      // console.warn(JSON.stringify(this.state.data, null, '  '))
+      return<View style={{flex:1, backgroundColor:"#f6f6f6"}}>
+      <SafeAreaView style={{flex:1}}>
+          <ScrollView>
+              {this.renderHeaderView()}
+              {this.renderBackBtn()}
 
-                {this.state.data.map((item, index)=>{
+              {this.state.data.map((item, index)=>{
 
-                    // 业务类型为第一个 入职业务
-                    if(this.state.businessType === 1){
-                      if(index === 0){
-                        return item.bussinessData.map((businessItem)=>{
-                          return this.renderListView(businessItem.busName)
-                        })
-                      }
+                  // 业务类型为第一个 入职业务
+                  if(this.state.businessType === 1){
+                    if(index === 0){
+                      return item.bussinessData.map((businessItem)=>{
+                        return this.renderListView(businessItem.busName)
+                      })
                     }
-                    else if(this.state.businessType === 2)
-                    {  // 业务类型为第二个在职业务
-                      if(index === 1){
-                        return item.bussinessData.map((businessItem)=>{
-                          return this.renderListView(businessItem.busName)
-                        })
-                      }
-                    }else {
-                      // 业务类型为第三个离职业务
-                      if(index === 2){
-                        return item.bussinessData.map((businessItem)=>{
-                          return this.renderListView(businessItem.busName)
-                        })
-                      }
+                  }
+                  else if(this.state.businessType === 2)
+                  {  // 业务类型为第二个在职业务
+                    if(index === 1){
+                      return item.bussinessData.map((businessItem)=>{
+                        return this.renderListView(businessItem.busName)
+                      })
                     }
-                })}
+                  }else {
+                    // 业务类型为第三个离职业务
+                    if(index === 2){
+                      return item.bussinessData.map((businessItem)=>{
+                        return this.renderListView(businessItem.busName)
+                      })
+                    }
+                  }
+              })}
 
-            </ScrollView>
-        </SafeAreaView>
-        </View>
-
-      // }
-
-      
-
-
-
-        
+          </ScrollView>
+      </SafeAreaView>
+      </View>  
     }
 
     // 加装View
@@ -214,6 +212,7 @@ export default class OnlineAppointScreen extends React.Component{
       );
     }
 
+
     render(){
 
         // 先看是否下载了，数据
@@ -221,24 +220,179 @@ export default class OnlineAppointScreen extends React.Component{
           return this.renderLoadingView();
         }
 
-        // 用户已近选择了一级业务类型,根据业务类型加载对应的
-        if(this.state.businessType === 1){
-          return this.renderBusinessView()
-        }
-
-        if(this.state.businessType === 2){
-            return this.renderBusinessView()
-        }
-        
-
-        if(this.state.businessType === 3){
-            return this.renderBusinessView()
-        }
-
-
-
         // 显示默认页面
-        return<View style={{flex:1, backgroundColor:"#f6f6f6"}}>
+        if(this.state.hasChoosen){
+
+            let firstName = ""
+            if(this.state.businessType === 1){
+              firstName = "入职业务"
+            }
+            if(this.state.businessType === 2){
+              firstName = "在职业务"
+            }
+            if(this.state.businessType === 3){
+              firstName = "离职业务"
+            }
+            let finalName = firstName + "-" + this.state.chooseBusiName;
+
+            return<View style={{flex:1, backgroundColor:"#f6f6f6"}}>
+              <SafeAreaView style={{flex:1}}>
+                  <ScrollView>
+
+                      {/* 顶部的一个广告位 */}
+                      {this.renderHeaderView()}
+
+                      {/* 一个功能块 */}
+                      <View style={styles.funcContainer}>
+                          <View style={{height:75, flex:1, flexDirection:"row", justifyContent:"space-around"}}>
+                              <TouchableHighlight onPress={()=>{
+                                  this._entryBtnClick(1)
+                              }} underlayColor="red" style={{flex:1}}>
+                                  <View style={styles.funcItemStyle}>
+                                      {/* 左边一个icon */}
+                                      <Image source={require("../images/icon/1.png")}></Image>
+                                      {/* 右边文字和英文 */}
+                                      <View>
+                                          <Text>入职业务</Text>
+                                          <Text>induction</Text>
+                                      </View>
+                                  </View>
+                              </TouchableHighlight>
+
+                              <TouchableHighlight onPress={()=>{
+                                  // alert("点击了在职任务")
+                                  this._entryBtnClick(2)
+                              }} underlayColor="red" style={{flex:1}}>
+                                  <View style={styles.funcItemStyle}>
+                                  {/* 左边一个icon */}
+                                  <Image source={require("../images/icon/2.png")}></Image>
+                                  {/* 右边文字和英文 */}
+                                  <View>
+                                      <Text>在职业务</Text>
+                                      <Text>induction</Text>
+                                  </View>
+                                  </View>
+                              </TouchableHighlight>
+                          </View>
+
+                          <View style={{height:75, flex:1, flexDirection:"row", justifyContent:"space-around"}}>
+                              
+                              <TouchableHighlight onPress={()=>{
+                                  // alert("点击了离职任务")
+                                  this._entryBtnClick(3)
+                              }} underlayColor="red" style={{flex:1}}>
+                                  <View style={styles.funcItemStyle}>
+                                      {/* 左边一个icon */}
+                                      <Image source={require("../images/icon/3.png")}></Image>
+                                      {/* 右边文字和英文 */}
+                                      <View>
+                                          <Text>离职业务</Text>
+                                          <Text>induction</Text>
+                                      </View>
+                                  </View>
+                              </TouchableHighlight>
+
+                              <View style={styles.funcItemStyle}>
+                                  {/* 左边一个icon
+                                  <Image source={require("../images/icon/3.png")}></Image>
+                                  {/* 右边文字和英文 */}
+                                  {/* <View>
+                                      <Text>离职业务</Text>
+                                      <Text>induction</Text>
+                                  </View> */} 
+                              </View>
+                          </View>
+                          
+                      </View>
+
+
+                      {/* 底部选择好的东西 */}
+                      <View style = {{height:100, backgroundColor:"#fff", marginHorizontal:20, marginTop:15, borderRadius:15 , flexDirection:"row", justifyContent:"space-between",}}>
+                        <View style = {{marginTop:15, marginHorizontal:15}}>
+                            <Text style = {{fontSize:20, fontWeight:"bold"}}>您已选择要办理的业务是：</Text>
+                            <Text style = {{marginTop:15}}>{finalName}</Text>
+                        </View>
+                        {/* 重新选择 */}
+                        <TouchableHighlight onPress = {()=>{
+
+                          // 重新选择
+                          this.setState({
+                            hasChoosen:false,
+                            businessType:0
+                          })
+
+
+                          }}
+                          underlayColor="white">
+                          <View style={{height:40, 
+                              width:50,
+                              marginVertical:10, 
+                              marginHorizontal:15, 
+                              backgroundColor:"red",
+                              borderRadius:20,
+                              justifyContent:"center",
+                              alignItems:"center"}}>
+                              <Text style = {{color:"white", fontSize:15}}>重选</Text>
+                          </View>
+
+                          </TouchableHighlight>
+                      </View>
+                      
+
+                  </ScrollView>
+                      {/* 底部按钮 */}
+                      <TouchableHighlight onPress = {()=>{
+
+                        Alert.alert("提示", "取号成功，请前往大厅排队拿号", [
+                            // {text:"我知道了", style:"cancel"},
+                            {text:"我知道了", style:"default", onPress:()=>{
+
+
+                              // alert("用户点击预约");
+
+                                // // 回退
+                                Actions.pop()
+                                // // 重新加载页面
+                                // Actions.reset("onlineApoint",{businessType:0});
+                            }}
+                        ])
+
+
+                        }}
+                        underlayColor="white">
+                        <View style={{height:40, 
+                            marginVertical:10, 
+                            marginHorizontal:15, 
+                            backgroundColor:"red",
+                            borderRadius:20,
+                            justifyContent:"center",
+                            alignItems:"center"}}>
+                            <Text style = {{color:"white", fontSize:15}}>取号</Text>
+                        </View>
+
+                        </TouchableHighlight>
+              </SafeAreaView>
+            </View>
+
+        }else
+        {
+
+          // 用户已近选择了一级业务类型,根据业务类型加载对应的
+          if(this.state.businessType === 1){
+            return this.renderBusinessView()
+          }
+
+          if(this.state.businessType === 2){
+              return this.renderBusinessView()
+          }
+          
+
+          if(this.state.businessType === 3){
+              return this.renderBusinessView()
+          }
+
+          // 最初进入页面
+          return<View style={{flex:1, backgroundColor:"#f6f6f6"}}>
             <SafeAreaView style={{flex:1}}>
                 <ScrollView>
 
@@ -311,6 +465,8 @@ export default class OnlineAppointScreen extends React.Component{
                 </ScrollView>
             </SafeAreaView>
         </View>
+        }
+        
     }
 
 }
