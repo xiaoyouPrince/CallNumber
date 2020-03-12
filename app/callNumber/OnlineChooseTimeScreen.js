@@ -1,8 +1,9 @@
 import React, { Component } from "react"
-import { View, SafeAreaView, ScrollView, Button, Text, Image, StyleSheet, Dimensions} from "react-native"
+import { View, SafeAreaView, ScrollView, Button, Text, Image, StyleSheet, Dimensions, Alert} from "react-native"
 import { Actions } from "react-native-router-flux"
 import { TouchableHighlight } from "react-native-gesture-handler"
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars'
+import DatePicker from "react-native-datepicker"
 
 
 
@@ -14,7 +15,43 @@ export default class OnlineChooseTimeScreen extends Component{
             businessType:props.businessType, // 默认是0表示未选择，1，2，3 分别代表三个业务
             businessName:props.businessName, // 本页面显示的业务名字
             chooseTime:"选择时间 >",  // 选择时间
+            // date:
         }
+    }
+
+
+    _renderDatePickerView = () => {
+
+        alert(this.state.date);
+        return <DatePicker
+                style={{width: 110, height:45, backgroundColor:"#fff", borderColor:""}}
+                date={this.state.date}
+                mode="time"
+                placeholder="选择时间 >"
+                format="hh-mm-ss"
+                minDate="2020-03-01"
+                maxDate="2022-06-01"
+                confirmBtnText="确定"
+                cancelBtnText="取消"
+                showIcon=""
+                customStyles={{
+                    dateInput: {borderColor:"#fff", borderWidth:1},
+                //   dateIcon: {
+                //     position: 'absolute',
+                //     left: 0,
+                //     top: 4,
+                //     marginLeft: 0
+                //   },
+                //  dateInput: {
+                //     marginLeft: 36
+                //  }
+                //   ... You can check the source to find the other keys.
+                }}
+                onDateChange={(date) => {
+                    // alert(date)
+                    this.setState({date: date})
+                }}
+              />
     }
 
     _renderChooseTimeView = ()=>{
@@ -50,9 +87,10 @@ export default class OnlineChooseTimeScreen extends Component{
                 flex:1,
                 flexDirection:"row",
                 justifyContent:"space-between",
+                alignItems:"center",
                 borderRadius:15,
                 backgroundColor:"#fff",
-                marginVertical:15,
+                marginVertical:0,
                 marginHorizontal:15,
             }
         })
@@ -63,16 +101,10 @@ export default class OnlineChooseTimeScreen extends Component{
             <Calendar style = {chooseTimeStyle.calendar}></Calendar>
             <View style = {chooseTimeStyle.line}></View>
 
-            <TouchableHighlight underlayColor = "red" onPress = {()=>{
-                alert("用户点击了选择时间");
-            }}>
-                <View style = {chooseTimeStyle.chooseTimeBtn}>
-                    <Text>选择时间</Text>
-                    <Text style = {{color:"lightgray"}}>{this.state.chooseTime}</Text>
-                </View>
-            </TouchableHighlight>
-            
-
+            <View style = {chooseTimeStyle.chooseTimeBtn}>
+                <Text>选择时间</Text>
+                {this._renderDatePickerView()}
+            </View>
         </View>
 
     }
@@ -128,10 +160,18 @@ export default class OnlineChooseTimeScreen extends Component{
             {/* 底部预约按钮 */}
             <TouchableHighlight onPress = {()=>{
 
-                // 进入资料详情页面
-                Actions.pop()
-                // 重新加载页面
-                Actions.reset("onlineApoint",{businessType:0});
+                Alert.alert("提示", "预约成功", [
+                    // {text:"我知道了", style:"cancel"},
+                    {text:"我知道了", style:"default", onPress:()=>{
+
+                        // 回退
+                        Actions.pop()
+                        // 重新加载页面
+                        Actions.reset("onlineApoint",{businessType:0});
+                    }}
+                ])
+
+                
             }}
             underlayColor="white">
                 <View style={{height:40, 
