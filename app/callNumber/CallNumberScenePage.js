@@ -17,9 +17,7 @@ export default class OnlineAppointScreen extends React.Component{
             businessType:props.businessType, // 默认是0表示未选择，1，2，3 分别代表三个业务
             hasChoosen:false, // 是否已经选择了业务
             businessList:[],
-            data: [{
-              deptName:"第一部分"
-            }],
+            data: [], // 请求到的列表数据源
             loaded: false,  // 是否已经加装数据
         }
 
@@ -40,7 +38,7 @@ export default class OnlineAppointScreen extends React.Component{
         .then(responseData => {
 
           this.setState({
-            // data: this.state.data.concat(responseData.data),
+            data: this.state.data.concat(responseData.data),
             loaded: true
           });
         });
@@ -152,12 +150,12 @@ export default class OnlineAppointScreen extends React.Component{
     }
 
     // 绘制有业务列表的页面
-    renderBusinessView() {
+    renderBusinessView = () => {
 
       // 这里要根据是第几个业务来看
       if(this.state.businessType === 1)
       {
-        alert(this.state.data);
+        console.warn(JSON.stringify(this.state.data, null, '  '))
       }
 
       
@@ -171,7 +169,7 @@ export default class OnlineAppointScreen extends React.Component{
                 {this.renderBackBtn()}
 
                 {this.state.data.map((item, index)=>{
-                    {this.renderListView(item.deptName)}
+                    return this.renderListView(item.deptName)
                 })}
                 
                 {/* 这里放置对应数量的二级业务 */}

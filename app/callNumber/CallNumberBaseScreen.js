@@ -89,13 +89,6 @@ export default class CallNumberBasePage extends React.Component
         })
     }
 
-
-    _renderPictures = ()=>{
-        this.state.pictures.map((item, i)=>{
-            return 
-        })
-    }
-
     render(){
         return <View style={{flex:1}}>
 
