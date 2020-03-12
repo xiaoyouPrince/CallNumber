@@ -3,7 +3,8 @@ import { View, SafeAreaView, ScrollView, StyleSheet, Text, Image, TouchableHighl
 import { color } from "react-native-reanimated"
 import { Actions, StackProps } from "react-native-router-flux"
 
-const REQUEST_URL = "http://localhost/json";
+// const REQUEST_URL = "http://localhost/json";
+const REQUEST_URL = "http://127.0.0.1/json";
 
 
 export default class OnlineAppointScreen extends React.Component{
@@ -153,15 +154,9 @@ export default class OnlineAppointScreen extends React.Component{
     renderBusinessView = () => {
 
       // 这里要根据是第几个业务来看
-      if(this.state.businessType === 1)
-      {
-        console.warn(JSON.stringify(this.state.data, null, '  '))
-      }
-
-      
-
-
-
+      // if(this.state.businessType === 1)
+      // {
+        // console.warn(JSON.stringify(this.state.data, null, '  '))
         return<View style={{flex:1, backgroundColor:"#f6f6f6"}}>
         <SafeAreaView style={{flex:1}}>
             <ScrollView>
@@ -169,21 +164,43 @@ export default class OnlineAppointScreen extends React.Component{
                 {this.renderBackBtn()}
 
                 {this.state.data.map((item, index)=>{
-                    return this.renderListView(item.deptName)
+
+                    // 业务类型为第一个 入职业务
+                    if(this.state.businessType === 1){
+                      if(index === 0){
+                        return item.bussinessData.map((businessItem)=>{
+                          return this.renderListView(businessItem.busName)
+                        })
+                      }
+                    }
+                    else if(this.state.businessType === 2)
+                    {  // 业务类型为第二个在职业务
+                      if(index === 1){
+                        return item.bussinessData.map((businessItem)=>{
+                          return this.renderListView(businessItem.busName)
+                        })
+                      }
+                    }else {
+                      // 业务类型为第三个离职业务
+                      if(index === 2){
+                        return item.bussinessData.map((businessItem)=>{
+                          return this.renderListView(businessItem.busName)
+                        })
+                      }
+                    }
                 })}
-                
-                {/* 这里放置对应数量的二级业务 */}
-                {/* {this.renderListView("任务1")}
-                {this.renderListView("任务2")}
-                {this.renderListView("任务3")}
-                {this.renderListView("任务4")}
-                {this.renderListView("任务5")}
-                {this.renderListView("任务6")}
-                {this.renderListView("任务7")}
-                {this.renderListView("任务8")} */}
+
             </ScrollView>
         </SafeAreaView>
         </View>
+
+      // }
+
+      
+
+
+
+        
     }
 
     // 加装View
@@ -206,35 +223,38 @@ export default class OnlineAppointScreen extends React.Component{
 
         // 用户已近选择了一级业务类型,根据业务类型加载对应的
         if(this.state.businessType === 1){
-          alert(this.state.businessList)
+          // alert(this.state.businessList)
           return this.renderBusinessView()
         }
 
         if(this.state.businessType === 2){
-            if(this.state.businessList){
-                return<View>
-                    <Text>这是在职业务的列表</Text>
-                </View>
-            }
+            // if(this.state.businessList){
+            //     return<View>
+            //         <Text>这是在职业务的列表</Text>
+            //     </View>
+            // }
+            return this.renderBusinessView()
         }
+        
 
         if(this.state.businessType === 3){
-            if(this.state.businessList){
-                return<View>
+            // if(this.state.businessList){
+            //     return<View>
 
-                    <Button onPress={()=>{
-                        // 用户点击返回
+            //         <Button onPress={()=>{
+            //             // 用户点击返回
                         
 
-                    }} title="返回"
-                    style={{
-                        marginTop:20,
-                        marginBottom:20,
-                        marginHorizontal:20
-                    }}></Button>
-                    <Text>这是离职业务的列表</Text>
-                </View>
-            }
+            //         }} title="返回"
+            //         style={{
+            //             marginTop:20,
+            //             marginBottom:20,
+            //             marginHorizontal:20
+            //         }}></Button>
+            //         <Text>这是离职业务的列表</Text>
+            //     </View>
+            // }
+            return this.renderBusinessView()
         }
 
 
