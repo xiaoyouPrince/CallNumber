@@ -15,22 +15,20 @@ export default class OnlineChooseTimeScreen extends Component{
             businessType:props.businessType, // 默认是0表示未选择，1，2，3 分别代表三个业务
             businessName:props.businessName, // 本页面显示的业务名字
             chooseTime:"选择时间 >",  // 选择时间
-            // date:
+            date:"" //"2020-03-12"
         }
     }
 
 
     _renderDatePickerView = () => {
 
-        alert(this.state.date);
+        // alert(this.state.date);
         return <DatePicker
                 style={{width: 110, height:45, backgroundColor:"#fff", borderColor:""}}
                 date={this.state.date}
                 mode="time"
                 placeholder="选择时间 >"
                 format="hh-mm-ss"
-                minDate="2020-03-01"
-                maxDate="2022-06-01"
                 confirmBtnText="确定"
                 cancelBtnText="取消"
                 showIcon=""
@@ -48,8 +46,9 @@ export default class OnlineChooseTimeScreen extends Component{
                 //   ... You can check the source to find the other keys.
                 }}
                 onDateChange={(date) => {
-                    // alert(date)
+                    
                     this.setState({date: date})
+                    // alert(date)
                 }}
               />
     }
@@ -98,7 +97,12 @@ export default class OnlineChooseTimeScreen extends Component{
         // 选择时间
         return <View style = {chooseTimeStyle.container}>
 
-            <Calendar style = {chooseTimeStyle.calendar}></Calendar>
+            <Calendar style = {chooseTimeStyle.calendar}
+                onDayPress={(day) => { 
+                        // 处理用户选择的日期
+                        console.warn(day)
+                    }}
+            ></Calendar>
             <View style = {chooseTimeStyle.line}></View>
 
             <View style = {chooseTimeStyle.chooseTimeBtn}>
@@ -160,12 +164,13 @@ export default class OnlineChooseTimeScreen extends Component{
             {/* 底部预约按钮 */}
             <TouchableHighlight onPress = {()=>{
 
-                Alert.alert("提示", "预约成功", [
+                Alert.alert("提示", "预约成功,请按预约时间到大厅取票", [
                     // {text:"我知道了", style:"cancel"},
                     {text:"我知道了", style:"default", onPress:()=>{
 
                         // 回退
                         Actions.popTo("app");
+                        
                         // 重新加载页面
                         // Actions.reset("onlineApoint",{businessType:0});
                     }}
